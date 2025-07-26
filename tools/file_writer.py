@@ -57,78 +57,239 @@ class FileWriter:
     
     def _process_content(self, content: str) -> str:
         """
-        Intelligently process content to handle escape sequences.
+        Intelligently process content to handle escape sequences for any file format.
         
-        This function uses a more sophisticated approach to determine when
-        escape sequences should be processed vs. preserved.
+        This function uses a generic approach that works across multiple languages
+        and file formats by detecting patterns rather than language-specific syntax.
         """
         if not content:
             return content
             
-        # Try to detect if this looks like code/text that has been over-escaped
-        # Common patterns that indicate over-escaping:
+        # Detect file type from common patterns to apply appropriate processing
+        file_context = self._detect_content_context(content)
         
-        # 1. Check for Python string patterns with escaped quotes
+        # Apply generic escape sequence processing
+        processed_content = self._process_escape_sequences(content, file_context)
+        
+        return processed_content
+    
+    def _detect_content_context(self, content: str) -> dict:
+        """
+        Detect the type of content and context to apply appropriate processing.
+        
+        Returns a context dictionary with detected patterns and characteristics.
+        """
+        context = {
+            'has_escaped_quotes': False,
+            'has_escaped_newlines': False,
+            'has_escaped_tabs': False,
+            'quote_style': 'mixed',  # 'single', 'double', 'mixed'
+            'likely_language': 'text',  # 'python', 'javascript', 'json', 'html', 'css', 'text'
+            'likely_overescaped': False
+        }
+        
+        # Check for escaped sequences
+        context['has_escaped_quotes'] = '\\"' in content or "\\'" in content
+        context['has_escaped_newlines'] = '\\n' in content and content.count('\\n') > content.count('\n')
+        context['has_escaped_tabs'] = '\\t' in content and content.count('\\t') > content.count('\t')
+        
+        # Detect quote style preference
+        double_quotes = content.count('"') + content.count('\\"')
+        single_quotes = content.count("'") + content.count("\\'")
+        
+        if double_quotes > single_quotes * 2:
+            context['quote_style'] = 'double'
+        elif single_quotes > double_quotes * 2:
+            context['quote_style'] = 'single'
+        else:
+            context['quote_style'] = 'mixed'
+        
+        # Detect likely language/format
+        context['likely_language'] = self._detect_language(content)
+        
+        # Detect if content appears over-escaped
+        context['likely_overescaped'] = self._is_likely_overescaped(content)
+        
+        return context
+    
+    def _detect_language(self, content: str) -> str:
+        """Detect the likely programming language or file format."""
+        content_lower = content.lower()
+        
+        # JSON detection
+        if content.strip().startswith(('{', '[')):
+            return 'json'
+        
+        # HTML/XML detection
+        if '<' in content and '>' in content:
+            if any(tag in content_lower for tag in ['<html>', '<div>', '<span>', '<p>', '<body>']):
+                return 'html'
+            elif content.strip().startswith('<?xml') or '</' in content:
+                return 'xml'
+        
+        # CSS detection
+        if '{' in content and '}' in content and ':' in content:
+            if any(prop in content_lower for prop in ['color:', 'font-', 'margin:', 'padding:']):
+                return 'css'
+        
+        # JavaScript detection
+        if any(keyword in content for keyword in ['function ', 'const ', 'let ', 'var ', '=>']):
+            return 'javascript'
+        
+        # Python detection
+        if any(keyword in content for keyword in ['def ', 'import ', 'class ', '__name__', 'print(']):
+            return 'python'
+        
+        # Shell script detection
+        if content.startswith('#!') or any(cmd in content for cmd in ['#!/bin/', 'echo ', '$(', '${', 'export ']):
+            return 'shell'
+        
+        # Markdown detection
+        if any(marker in content for marker in ['# ', '## ', '- ', '* ', '```', '[', '](']):
+            return 'markdown'
+        
+        return 'text'
+    
+    def _is_likely_overescaped(self, content: str) -> bool:
+        """
+        Determine if content appears to be over-escaped.
+        
+        Over-escaped content typically has more escaped sequences than actual characters.
+        """
+        # Count various escape patterns
+        escaped_quotes = content.count('\\"') + content.count("\\'")
+        escaped_newlines = content.count('\\n')
+        escaped_tabs = content.count('\\t')
+        
+        # Count actual characters
+        actual_quotes = content.count('"') + content.count("'") - escaped_quotes
+        actual_newlines = content.count('\n')
+        actual_tabs = content.count('\t')
+        
+        # If we have significantly more escaped than actual, it's likely over-escaped
+        total_escaped = escaped_quotes + escaped_newlines + escaped_tabs
+        total_actual = actual_quotes + actual_newlines + actual_tabs
+        
+        return total_escaped > 0 and (total_escaped >= total_actual or total_escaped > 3)
+    
+    def _process_escape_sequences(self, content: str, context: dict) -> str:
+        """
+        Process escape sequences based on the detected context.
+        
+        This is the main processing function that applies transformations
+        based on the content analysis.
+        """
+        if not context['likely_overescaped']:
+            return content
+        
+        processed = content
+        
+        # Handle quotes based on detected language and patterns
+        if context['has_escaped_quotes']:
+            processed = self._process_quotes(processed, context)
+        
+        # Handle newlines and tabs
+        if context['has_escaped_newlines']:
+            processed = processed.replace('\\n', '\n')
+        
+        if context['has_escaped_tabs']:
+            processed = processed.replace('\\t', '\t')
+        
+        # Handle other escape sequences
+        processed = processed.replace('\\r', '\r')
+        
+        # Handle escaped backslashes (do this last)
+        processed = processed.replace('\\\\', '\\')
+        
+        return processed
+    
+    def _process_quotes(self, content: str, context: dict) -> str:
+        """
+        Process quotes based on the detected language and context.
+        
+        This handles quotes differently based on the file type and patterns.
+        """
+        language = context['likely_language']
+        
+        if language == 'json':
+            # JSON requires double quotes, so convert escaped doubles to doubles
+            content = content.replace('\\"', '"')
+            # But preserve escaped singles if they're inside strings
+            return content
+        
+        elif language in ['python', 'javascript']:
+            # For programming languages, use context-aware quote processing
+            return self._process_programming_quotes(content)
+        
+        elif language == 'html':
+            # HTML attributes typically use double quotes
+            content = content.replace('\\"', '"')
+            return content
+        
+        elif language == 'css':
+            # CSS can use both, preserve the dominant style
+            if context['quote_style'] == 'double':
+                content = content.replace('\\"', '"')
+            elif context['quote_style'] == 'single':
+                content = content.replace("\\'", "'")
+            else:
+                # Mixed - process both
+                content = content.replace('\\"', '"')
+                content = content.replace("\\'", "'")
+            return content
+        
+        else:
+            # For text and unknown formats, process both types
+            content = content.replace('\\"', '"')
+            content = content.replace("\\'", "'")
+            return content
+    
+    def _process_programming_quotes(self, content: str) -> str:
+        """
+        Process quotes in programming languages using pattern matching.
+        
+        This looks for common patterns where quotes are used in programming
+        contexts and converts escaped quotes appropriately.
+        """
         import re
         
-        # Pattern for Python strings with escaped quotes that should be unescaped
-        # e.g., "Hello \"world\"" should become "Hello "world""
-        python_string_pattern = r'(\w+\s*=\s*|return\s+|print\s*\()\s*\\"([^"]*)\\"'
-        if re.search(python_string_pattern, content):
-            # This looks like Python code with over-escaped quotes
-            content = self._unescape_python_strings(content)
-        
-        # 2. Handle other common escape sequences
-        # Only process these if they appear to be literal escape sequences
-        if self._should_process_escapes(content):
-            content = content.replace('\\n', '\n')
-            content = content.replace('\\t', '\t')
-            content = content.replace('\\r', '\r')
-            # Handle double backslashes last
-            content = content.replace('\\\\', '\\')
-        
-        return content
-    
-    def _unescape_python_strings(self, content: str) -> str:
-        """Unescape Python string literals that have been over-escaped."""
-        import re
-        
-        # Replace escaped quotes in common Python contexts
-        # Handle return statements with escaped quotes
-        content = re.sub(r'(return\s+)\\"([^"]*)\\"', r'\1"\2"', content)
-        
-        # Handle print statements with escaped quotes
-        content = re.sub(r'(print\s*\(\s*)\\"([^"]*)\\"', r'\1"\2"', content)
-        
-        # Handle variable assignments with escaped quotes
-        content = re.sub(r'(\w+\s*=\s*)\\"([^"]*)\\"', r'\1"\2"', content)
-        
-        # Handle function calls with escaped quotes
-        content = re.sub(r'(\w+\s*\(\s*)\\"([^"]*)\\"', r'\1"\2"', content)
-        
-        # Handle if statements and comparisons
-        content = re.sub(r'(==\s*)\\"([^"]*)\\"', r'\1"\2"', content)
-        
-        # Handle escaped single quotes in similar contexts
-        content = re.sub(r"(return\s+)\\'([^']*)\\'", r'''\1'\2' ''', content)
-        content = re.sub(r"(print\s*\(\s*)\\'([^']*)\\'", r'''\1'\2' ''', content)
-        
-        return content
-    
-    def _should_process_escapes(self, content: str) -> bool:
-        """
-        Determine if escape sequences should be processed.
-        
-        Returns True if the content appears to contain literal escape sequences
-        that should be converted to their actual characters.
-        """
-        # Don't process if content already has actual newlines/tabs
-        # (indicates it's already properly formatted)
-        if '\n' in content or '\t' in content:
-            return False
+        # More comprehensive patterns that handle various quote scenarios
+        patterns = [
+            # Simple escaped quotes within strings (most common case)
+            (r'\\"([^"\\]*)\\"', r'"\1"'),  # \\"text\\" -> "text"
+            (r"\\'([^'\\]*)\\'", r"'\1'"),  # \\'text\\' -> 'text'
             
-        # Process if we see literal escape sequences
-        if '\\n' in content or '\\t' in content or '\\r' in content:
-            return True
+            # Mixed scenarios: \\"text" or "text\\"
+            (r'\\"([^"]*)"', r'"\1"'),      # \\"text" -> "text"
+            (r'"\\"([^"]*)', r'"\1"'),      # "\\"text -> "text (this shouldn't happen but just in case)
+            (r'"([^"]*)\\"', r'"\1"'),      # "text\\" -> "text"
             
-        return False
+            # Same for single quotes
+            (r"\\'([^']*)'", r"'\1'"),      # \\'text' -> 'text'
+            (r"'\\'([^']*)", r"'\1'"),      # '\\'text -> 'text (this shouldn't happen but just in case)
+            (r"'([^']*)\\'", r"'\1'"),      # 'text\\' -> 'text'
+            
+            # Context-specific patterns
+            # Function calls: func(\\"string\\") 
+            (r'(\w+\s*\(\s*[^)]*)\\"([^"]*)\\"', r'\1"\2"'),
+            (r"(\w+\s*\(\s*[^)]*)\\'([^']*)\\'", r"\1'\2'"),
+            
+            # Variable assignments: var = \\"string\\"
+            (r'(\w+\s*[=:]\s*)\\"([^"]*)\\"', r'\1"\2"'),
+            (r"(\w+\s*[=:]\s*)\\'([^']*)\\'", r"\1'\2'"),
+            
+            # Comparisons: if x == \\"string\\"
+            (r'([=!<>]+\s*)\\"([^"]*)\\"', r'\1"\2"'),
+            (r"([=!<>]+\s*)\\'([^']*)\\'", r"\1'\2'"),
+            
+            # Return statements: return \\"string\\"
+            (r'(return\s+)\\"([^"]*)\\"', r'\1"\2"'),
+            (r"(return\s+)\\'([^']*)\\'", r"\1'\2'"),
+        ]
+        
+        # Apply patterns in order, being careful not to double-process
+        processed = content
+        for pattern, replacement in patterns:
+            processed = re.sub(pattern, replacement, processed)
+        
+        return processed
