@@ -175,7 +175,7 @@ chapter-agent/
 │       ├── command_parser.py     # Command parsing logic
 │       ├── gemini_client.py      # AI API integration
 │       └── context.py            # Project context building
-├── 📁 Tool System (NEW!)
+├── 📁 Tool System
 │   └── tools/
 │       ├── file_lister.py        # Directory scanning tool
 │       ├── file_reader.py        # File reading tool
