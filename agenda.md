@@ -1,0 +1,2 @@
+- Mostrar como montei o plano de desenvolvimento, discutindo requisitos com a AI pelo AI Studio.
+- Mostrar como executei o desenvolvimento, pedindo para a AI quebrar em partes utilizando um arquivo markdown para manter tracking de onde está, o que foi executado, o que falta fazer.

@@ -1,0 +1,17 @@
+# Core AI dependencies
+google-genai>=0.5.0
+
+# Terminal UI and formatting
+rich>=13.0.0
+
+# Async file operations
+aiofiles>=23.0.0
+
+# Environment variable management
+python-dotenv>=1.0.0
+
+# HTTP client for API calls
+httpx>=0.25.0
+
+# JSON handling and utilities
+pydantic>=2.0.0

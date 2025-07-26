@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  chapter-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chapter-agent
+    environment:
+      # Load environment variables from .env file
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      # Mount the workspace directory for file operations
+      - ./workspace:/app/workspace
+      # Mount the host machine root for external project access
+      - /:/host
+    stdin_open: true
+    tty: true
+    # Override command for interactive mode
+    command: python main.py
+    
+  # Optional: Development service with hot reload
+  chapter-agent-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chapter-agent-dev
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+      - ./workspace:/app/workspace
+      # Mount the host machine root for external project access
+      - /:/host
+    stdin_open: true
+    tty: true
+    command: python main.py
+    profiles:
+      - dev
+
+volumes:
+  workspace:
+    driver: local
