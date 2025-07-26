@@ -8,6 +8,7 @@ services:
     environment:
       # Load environment variables from .env file
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DEBUG_RAW_CONTENT=${DEBUG_RAW_CONTENT}
     volumes:
       # Mount the workspace directory for file operations
       - ./workspace:/app/workspace
@@ -26,6 +27,7 @@ services:
     container_name: chapter-agent-dev
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DEBUG_RAW_CONTENT=${DEBUG_RAW_CONTENT}
       - PYTHONPATH=/app
     volumes:
       - .:/app

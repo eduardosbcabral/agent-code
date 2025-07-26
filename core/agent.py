@@ -147,8 +147,9 @@ class ChapterAgent:
 
                 if self.config.debug_raw_content:
                     if response_data['final_text']:
-                        print('======== ### RAW RESPONSE ### ==========')
+                        print('==================== RAW RESPONSE ====================')
                         print(response_data['final_text'])
+                        print('==================== END RAW RESPONSE ====================')
                 
                 # Parse the response for commands
                 parsed_response = self.command_parser.parse_response(response_data['final_text'])
