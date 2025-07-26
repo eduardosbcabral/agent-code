@@ -1,4 +1,11 @@
-"""Meta-prompt template for Chapter Agent."""
+"""Meta-pro**Command and Response Format Rules:**
+You will reason internally about a task. Your response must be structured using the specific tags below.
+
+1.  **Action Sequence:** For each action you take, you may first provide a human-friendly comment in a `<narration>` tag, followed immediately by the corresponding machine-readable command in a `<command>` tag. You can issue multiple `<narration>`/`<command>` pairs in a single turn.
+
+2.  **Task Completion:** When the user's overall task is fully complete, you MUST issue the `[CMD:FINISH]` command. Immediately after the finish command, you MUST provide the final, user-facing answer inside an `<o>` tag. Do not provide an `<o>` tag at any other time.
+
+3.  **CRITICAL: Do NOT use FINISH prematurely.** Never issue `[CMD:FINISH]` in the same response as data-gathering commands like `READ_FILE`, `LIST_FILES`, or `TERMINAL_COMMAND`. You must wait for the results of those commands, analyze them in a subsequent turn, and THEN decide whether to finish or take more actions. Only use `[CMD:FINISH]` when you have completed all necessary work and analyzed all required information.mplate for Chapter Agent."""
 
 META_PROMPT = """
 **Persona and Goal:**

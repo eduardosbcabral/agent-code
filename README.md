@@ -1,114 +1,88 @@
-# Chapter Agent 🤖
+# Chapter Agent Test Workspace
 
-A manually controlled Python AI Agent that operates in a sandboxed environment with transparent command execution and structured terminal UI.
+Welcome to the Chapter Agent test workspace! This directory contains various projects and files designed to test and demonstrate the Chapter Agent's capabilities.
 
-## 🎯 Overview
+## Directory Structure
 
-Chapter Agent is an AI-powered development assistant that can:
-- Read and write files within a specified directory
-- Maintain project context across conversations
-- Execute terminal commands with full transparency
-- Provide structured, formatted terminal output
+### 📁 `python-examples/`
+Python projects with intentional bugs and incomplete features for testing:
+- `calculator.py` - Calculator with syntax errors (missing colons)
+- `file_processor.py` - File manipulation utilities
+- `data_analyzer.py` - Statistical analysis functions
+- `tests/` - Empty test directory for agent to populate
 
-## 🚀 Quick Start
+**Test Scenarios:**
+- "Fix the syntax errors in calculator.py"
+- "Create unit tests for the calculator functions"
+- "Add a factorial function to the calculator"
 
-### Option 1: Local Development
-```bash
-# Clone the repository
-git clone <repository-url>
-cd chapter-agent
+### 📁 `web-project/`
+Web development project with HTML, CSS, and JavaScript issues:
+- `index.html` - Basic website structure (missing contact section)
+- `style.css` - Incomplete styling with layout issues
+- `script.js` - JavaScript with bugs and missing functionality
+- `package.json` - Node.js project configuration
 
-# Set up virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+**Test Scenarios:**
+- "Fix the CSS responsive design issues"
+- "Add a contact form to the website"
+- "Debug the JavaScript button functionality"
+- "Improve the website's accessibility"
 
-# Install dependencies
-pip install -r requirements.txt
+### 📁 `data-analysis/`
+Data science project with datasets and analysis scripts:
+- `sales_data.csv` - Sample sales data with duplicates
+- `customer_data.json` - Customer information in JSON format
+- `analyze_sales.py` - Sales analysis script (incomplete functions)
+- `clean_data.py` - Data cleaning utilities (has bugs)
 
-# Configure API keys (see Configuration section)
-# Run the agent
-python main.py
-```
+**Test Scenarios:**
+- "Clean the sales data and remove duplicates"
+- "Complete the customer analysis function"
+- "Create visualizations for the sales trends"
+- "Fix the data cleaning script errors"
 
-### Option 2: Docker (Recommended)
-```bash
-# Clone the repository
-git clone <repository-url>
-cd chapter-agent
+### 📁 `scripts/`
+Utility scripts for common tasks:
+- `file_organizer.py` - File organization script (has bugs)
+- `system_info.py` - System information gatherer
+- Various utility functions
 
-# Copy environment template and configure
-cp .env.example .env
-# Edit .env with your API keys
+**Test Scenarios:**
+- "Fix the file organizer and test it"
+- "Create a backup utility script"
+- "Add error handling to the scripts"
 
-# Run with Docker Compose
-docker-compose up chapter-agent
+## How to Use This Workspace
 
-# For development with hot reload
-docker-compose --profile dev up chapter-agent-dev
-```
+1. **Start the Chapter Agent** and point it to this workspace directory
+2. **Choose a test scenario** from any of the projects above
+3. **Give the agent a task** like:
+   - "Fix all the syntax errors in the Python calculator"
+   - "Complete the missing functionality in the web project"
+   - "Clean and analyze the sales data"
+   - "Create a new utility script for file backups"
 
-## 📋 Development Status
-
-This project is currently in development. See [development-plan.md](development-plan.md) for detailed progress tracking and implementation roadmap.
-
-**Current Phase:** Foundation & Setup
-**Progress:** 0/25 core tasks completed
-
-## 🔧 Configuration
-
-### Required API Keys:
-- **Gemini API Key**: Get from [Google AI Studio](https://aistudio.google.com/)
-
-### Environment Setup:
-```bash
-# Option 1: Environment variables
-export GEMINI_API_KEY="your_gemini_key_here"
-
-# Option 2: .env file (recommended for Docker)
-cp .env.example .env
-# Edit .env file with your actual API key
-```
-
-## 🏗️ Architecture
-
-### Core Components:
-- **AI Engine**: Google Gemini API for intelligent responses
-- **Command System**: Structured command parsing and execution
-- **UI Framework**: Rich terminal interface with formatted output
-- **Sandbox**: Secure file operations within specified directory
-
-### Available Commands:
-- `READ_FILE(path)` - Read file contents
-- `WRITE_FILE(path, content)` - Create/modify files
-- `LIST_FILES()` - Show directory structure
-- `TERMINAL_COMMAND(command)` - Execute any terminal command in working directory
-- `FINISH()` - Complete task and provide final output
-
-## 📁 Project Structure
+## Example Commands to Test
 
 ```
-chapter-agent/
-├── main.py              # Application entry point
-├── requirements.txt     # Python dependencies
-├── Dockerfile          # Docker container definition
-├── docker-compose.yml  # Docker orchestration
-├── development-plan.md  # Detailed development roadmap
-├── workspace/          # Default working directory for Docker
-├── config/             # Configuration and settings
-├── core/               # Core agent logic
-├── tools/              # Command implementations
-├── ui/                 # Terminal interface
-└── tests/              # Test suite
+"Fix the calculator.py file - it has syntax errors"
+"Create unit tests for all the calculator functions"
+"Add responsive design to the web project"
+"Clean the sales data and generate a report"
+"Create a script to find the largest files in a directory"
+"Install the Python dependencies and run the data analysis"
 ```
 
-## 🤝 Contributing
+## Expected Agent Capabilities
 
-This project follows a structured development approach. Check the [development plan](development-plan.md) for current priorities and how to contribute.
+The Chapter Agent should be able to:
+- ✅ **Read and analyze** code files to identify issues
+- ✅ **Fix syntax errors** and bugs in the code
+- ✅ **Write new files** and complete missing functionality
+- ✅ **Install dependencies** using package managers
+- ✅ **Run tests** and execute scripts to verify fixes
+- ✅ **Create documentation** and improve code quality
+- ✅ **Work with multiple file types** (Python, HTML, CSS, JS, JSON, CSV)
 
-## 📄 License
-
-[Add your license here]
-
----
-
-*Built with ❤️ using Python, Google Gemini AI, and Rich terminal formatting*
+Happy testing! 🚀

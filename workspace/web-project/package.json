@@ -1,0 +1,22 @@
+{
+  "name": "sample-web-project",
+  "version": "1.0.0",
+  "description": "A sample web project for testing Chapter Agent capabilities",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "build": "echo 'Build process would go here'",
+    "test": "echo 'Tests would go here'"
+  },
+  "dependencies": {
+    "bootstrap": "^5.1.0",
+    "jquery": "^3.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^2.4.0"
+  },
+  "keywords": ["web", "html", "css", "javascript"],
+  "author": "Chapter Agent Test",
+  "license": "MIT"
+}

@@ -1,1 +1,0 @@
-# Simple test file for the workspace\n\ndef sum_ten_numbers():\n    numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\n    total = sum(numbers)\n    return total\n\nif __name__ == \"__main__\":\n    print(\"Hello from workspace test file!\")\n    result = sum_ten_numbers()\n    print(f\"Sum of the first 10 numbers: {result}\")\n

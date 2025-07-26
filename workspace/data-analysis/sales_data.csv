@@ -1,0 +1,21 @@
+Date,Product,Customer,Quantity,Price,Revenue
+2025-01-01,Widget A,John Doe,5,10.00,50.00
+2025-01-01,Widget B,Jane Smith,3,15.00,45.00
+2025-01-02,Widget A,John Doe,2,10.00,20.00
+2025-01-02,Widget C,Bob Johnson,1,25.00,25.00
+2025-01-03,Widget B,Jane Smith,4,15.00,60.00
+2025-01-03,Widget A,Alice Brown,10,10.00,100.00
+2025-01-04,Widget C,Bob Johnson,2,25.00,50.00
+2025-01-04,Widget B,John Doe,6,15.00,90.00
+2025-01-05,Widget A,Alice Brown,3,10.00,30.00
+2025-01-05,Widget C,Jane Smith,1,25.00,25.00
+2025-01-05,Widget A,John Doe,5,10.00,50.00
+2025-01-01,Widget A,John Doe,5,10.00,50.00
+2025-01-06,Widget B,Alice Brown,8,15.00,120.00
+2025-01-06,Widget C,Bob Johnson,3,25.00,75.00
+2025-01-07,Widget A,Jane Smith,4,10.00,40.00
+2025-01-07,Widget B,John Doe,2,15.00,30.00
+2025-01-08,Widget C,Alice Brown,1,25.00,25.00
+2025-01-08,Widget A,Bob Johnson,7,10.00,70.00
+2025-01-09,Widget B,Jane Smith,5,15.00,75.00
+2025-01-09,Widget A,John Doe,3,10.00,30.00

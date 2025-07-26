@@ -15,7 +15,7 @@ from core.history import ConversationHistory
 from core.parser import ThoughtExtractor
 from core.command_executor import CommandExecutor
 from core.command_parser import CommandParser
-from ui.display import display_info, display_error, display_thoughts, display_action, display_observation
+from ui.display import display_info, display_error, display_thoughts, display_action, display_observation, display_warning
 
 console = Console()
 
@@ -91,56 +91,80 @@ class ChapterAgent:
                 display_error(f"Error during interaction: {e}")
     
     async def _process_user_input(self, user_input: str):
-        """Process a user input through the AI agent."""
+        """Process a user input through the AI agent with continuous task execution."""
         try:
             # Add user message to history
             self.conversation_history.add_user_message(user_input)
             
-            # Get AI response
-            display_info("🤔 Agent is thinking...")
-            response_data = await self.gemini_client.generate_response(
-                self.conversation_history.get_conversation_for_api()
-            )
+            # Start task execution loop - continues until FINISH command or max iterations
+            max_iterations = 10  # Prevent infinite loops
+            iteration = 0
+            task_completed = False
+            total_commands = 0
+            max_commands = 20
             
-            if not response_data:
-                display_error("Failed to get response from AI")
-                return
-            
-            # Display thoughts
-            if response_data['thoughts']:
-                display_thoughts(response_data['thoughts'])
-            
-            # Parse the response for commands
-            parsed_response = self.command_parser.parse_response(response_data['final_text'])
-            
-            # Validate commands
-            validation = self.command_parser.validate_commands(parsed_response['commands'])
-            if not validation['valid']:
-                display_error("Invalid commands detected in AI response")
-                for error in validation['errors']:
-                    display_error(f"  - {error}")
-                return
-            
-            # Display command summary
-            if parsed_response['commands']:
+            while not task_completed and iteration < max_iterations and total_commands < max_commands:
+                iteration += 1
+                
+                # Get AI response
+                display_info("🤔 Agent is thinking...")
+                response_data = await self.gemini_client.generate_response(
+                    self.conversation_history.get_conversation_for_api(),
+                )
+                
+                if not response_data:
+                    display_error("Failed to get response from AI")
+                    break
+                
+                # Display thoughts
+                if response_data['thoughts']:
+                    display_thoughts(response_data['thoughts'])
+                
+                # Parse the response for commands
+                parsed_response = self.command_parser.parse_response(response_data['final_text'])
+                
+                # Validate commands
+                validation = self.command_parser.validate_commands(parsed_response['commands'])
+                if not validation['valid']:
+                    display_error("Invalid commands detected in AI response")
+                    for error in validation['errors']:
+                        display_error(f"  - {error}")
+                    break
+                
+                # Check if AI response has commands
+                if not parsed_response['commands']:
+                    # No commands - AI might be providing final answer
+                    if parsed_response['final_output']:
+                        console.print(f"\n[green]✅ Task Complete![/green]")
+                        console.print(f"\n[bold]Final Answer:[/bold]\n{parsed_response['final_output']}")
+                        task_completed = True
+                    else:
+                        # No commands and no final output - add response and continue
+                        self.conversation_history.add_assistant_response(
+                            thoughts=response_data['thoughts'],
+                            final_text=response_data['final_text'],
+                            actions=[]
+                        )
+                    break
+                
+                # Display command summary
                 console.print(f"\n[blue]{self.command_parser.format_command_summary(parsed_response['commands'])}[/blue]")
                 
-                # Check command limit (max 20 commands per operation)
-                max_commands = 20
+                # Check command limit
                 command_count = len(parsed_response['commands'])
+                total_commands += command_count
                 
-                if command_count > max_commands:
-                    display_error(f"Too many commands in response: {command_count} (limit: {max_commands})")
-                    display_error("Request the AI to break the task into smaller operations")
-                    return
+                if total_commands > max_commands:
+                    display_error(f"Command limit exceeded: {total_commands} (limit: {max_commands})")
+                    display_error("Task execution stopped to prevent runaway operations")
+                    break
                 
                 # Display narrations if present
                 for i, narration in enumerate(parsed_response['narrations']):
                     console.print(f"\n[dim]Agent: {narration}[/dim]")
                 
-                # Execute commands with termination control
+                # Execute commands
                 observations = []
-                task_completed = False
                 
                 for i, command in enumerate(parsed_response['commands']):
                     display_action(i + 1, "", f"[CMD:{command['type']}]")
@@ -152,7 +176,19 @@ class ChapterAgent:
                     )
                     
                     if result['success']:
-                        observation = f"[Command {i+1} - {command['type']}]: {result['output']}"
+                        # Format observation based on command type for better readability
+                        if command['type'] == 'READ_FILE':
+                            # For file content, format with proper line breaks and code block
+                            file_content = result['output']
+                            observation = f"[Command {i+1} - {command['type']}]: Successfully read file '{command['args'][0]}'\n\nFile Content:\n```\n{file_content}\n```"
+                        elif command['type'] == 'LIST_FILES':
+                            observation = f"[Command {i+1} - {command['type']}]: {result['output']}"
+                        elif command['type'] == 'WRITE_FILE':
+                            observation = f"[Command {i+1} - {command['type']}]: Successfully wrote {result.get('size', 0)} characters to '{command['args'][0]}'"
+                        elif command['type'] == 'TERMINAL_COMMAND':
+                            observation = f"[Command {i+1} - {command['type']}]: Executed '{command['args'][0]}'\n\nOutput:\n{result['output']}"
+                        else:
+                            observation = f"[Command {i+1} - {command['type']}]: {result['output']}"
                     else:
                         observation = f"[Command {i+1} - {command['type']} ERROR]: {result.get('error', 'Unknown error')}"
                         display_error(f"Command failed: {result.get('error', 'Unknown error')}")
@@ -172,23 +208,34 @@ class ChapterAgent:
                     # Add observations to conversation history
                     self.conversation_history.add_observation('\n\n'.join(observations))
                 
-                # Handle final output and task completion
-                if task_completed and parsed_response['final_output']:
-                    console.print(f"\n[green]✅ Task Complete![/green]")
-                    console.print(f"\n[bold]Final Answer:[/bold]\n{parsed_response['final_output']}")
-                elif task_completed:
-                    console.print(f"\n[green]✅ Task Complete![/green]")
-                    console.print(f"\n[bold]Final Answer:[/bold] Operation completed successfully.")
-                elif not task_completed and command_count > 0:
-                    console.print(f"\n[yellow]⚠ Warning:[/yellow] {command_count} commands executed without FINISH command")
-                    console.print(f"[yellow]The AI should end operations with a FINISH command.[/yellow]")
+                # Add assistant response to history (for this iteration)
+                self.conversation_history.add_assistant_response(
+                    thoughts=response_data['thoughts'],
+                    final_text=response_data['final_text'],
+                    actions=[]
+                )
+                
+                # Handle final output when task is completed
+                if task_completed:
+                    if parsed_response['final_output']:
+                        console.print(f"\n[green]✅ Task Complete![/green]")
+                        console.print(f"\n[bold]Final Answer:[/bold]\n{parsed_response['final_output']}")
+                    else:
+                        console.print(f"\n[green]✅ Task Complete![/green]")
+                        console.print(f"\n[bold]Final Answer:[/bold] Operation completed successfully.")
+                    break
+                
+                # Continue loop for next AI iteration (unless FINISH was called)
             
-            # Add assistant response to history
-            self.conversation_history.add_assistant_response(
-                thoughts=response_data['thoughts'],
-                final_text=response_data['final_text'],
-                actions=[]  # We'll update this to use the new command format later
-            )
+            # Handle cases where loop ended without proper completion
+            if not task_completed and total_commands > 0:
+                if iteration >= max_iterations:
+                    display_warning(f"Task execution stopped after {max_iterations} iterations")
+                elif total_commands >= max_commands:
+                    display_warning(f"Task execution stopped after {total_commands} commands (limit: {max_commands})")
+                else:
+                    display_warning(f"{total_commands} commands executed without FINISH command")
+                display_warning("The AI should end operations with a FINISH command.")
                 
         except Exception as e:
             display_error(f"Error processing user input: {e}")

@@ -50,7 +50,11 @@ class GeminiClient:
                 contents=contents,
                 config=types.GenerateContentConfig(
                     temperature=0.1,  # Lower temperature for more consistent responses
-                    max_output_tokens=4096
+                    max_output_tokens=4096,
+                    thinking_config=types.ThinkingConfig(
+                        include_thoughts=True,
+                        thinking_budget=-1
+                    )
                 )
             )
             

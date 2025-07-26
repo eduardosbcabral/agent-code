@@ -1,0 +1,66 @@
+/* Basic styles - needs improvement */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    /* Missing background color */
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 1rem;
+    /* Missing responsive design */
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Main content styles are incomplete */
+main {
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 30px;
+}
+
+/* Service grid has layout issues */
+.service-grid {
+    display: flex;
+}
+
+.service-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px;
+    /* Missing flex properties */
+}
+
+/* Button styling is missing */
+button {
+    /* Add styling here */
+}
+
+/* Footer needs better positioning */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Missing responsive breakpoints */

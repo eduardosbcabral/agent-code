@@ -1,0 +1,64 @@
+{
+  "customers": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john.doe@email.com",
+      "phone": "555-0101",
+      "address": {
+        "street": "123 Main St",
+        "city": "Anytown",
+        "state": "CA",
+        "zip": "12345"
+      },
+      "registration_date": "2024-01-15",
+      "total_orders": 25,
+      "lifetime_value": 1250.00
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "jane.smith@email.com",
+      "phone": "555-0102",
+      "address": {
+        "street": "456 Oak Ave",
+        "city": "Somewhere",
+        "state": "NY",
+        "zip": "67890"
+      },
+      "registration_date": "2024-02-20",
+      "total_orders": 18,
+      "lifetime_value": 890.00
+    },
+    {
+      "id": 3,
+      "name": "Bob Johnson",
+      "email": "bob.johnson@email.com",
+      "phone": "555-0103",
+      "address": {
+        "street": "789 Pine Rd",
+        "city": "Elsewhere",
+        "state": "TX",
+        "zip": "54321"
+      },
+      "registration_date": "2024-03-10",
+      "total_orders": 32,
+      "lifetime_value": 1680.00
+    },
+    {
+      "id": 4,
+      "name": "Alice Brown",
+      "email": "alice.brown@email.com",
+      "phone": "555-0104",
+      "address": {
+        "street": "321 Elm St",
+        "city": "Nowhere",
+        "state": "FL",
+        "zip": "98765"
+      },
+      "registration_date": "2024-01-05",
+      "total_orders": 41,
+      "lifetime_value": 2050.00
+    }
+  ]
+}

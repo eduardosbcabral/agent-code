@@ -192,19 +192,22 @@ class CommandExecutor:
             # Resolve path relative to workspace
             full_path = self._resolve_path(file_path)
             
+            # Process content to handle escaped newlines and other escape sequences
+            processed_content = content.replace('\\n', '\n').replace('\\t', '\t').replace('\\r', '\r')
+            
             # Create parent directories if they don't exist
             full_path.parent.mkdir(parents=True, exist_ok=True)
             
             async with aiofiles.open(full_path, mode='w', encoding='utf-8') as f:
-                await f.write(content)
+                await f.write(processed_content)
             
-            display_success(f"Wrote file: {file_path} ({len(content)} characters)")
+            display_success(f"Wrote file: {file_path} ({len(processed_content)} characters)")
             
             return {
                 "success": True,
-                "output": f"Successfully wrote {len(content)} characters to {file_path}",
+                "output": f"Successfully wrote {len(processed_content)} characters to {file_path}",
                 "file_path": str(full_path),
-                "size": len(content)
+                "size": len(processed_content)
             }
             
         except Exception as e:
