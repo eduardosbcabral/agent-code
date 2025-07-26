@@ -1,4 +1,4 @@
-"""File writer tool for Chapter Agent."""
+"""File writer tool for Agent Code."""
 
 from pathlib import Path
 from typing import Dict, Any

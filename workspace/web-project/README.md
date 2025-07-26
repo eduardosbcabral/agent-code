@@ -2,7 +2,7 @@
 Simple Web Project
 ==================
 
-This is a basic web project to test the Chapter Agent's web development capabilities:
+This is a basic web project to test the Agent Code's web development capabilities:
 
 Structure:
 - index.html - Main HTML page (needs improvement)

@@ -1,1 +1,1 @@
-"""Core agent functionality for Chapter Agent."""
+"""Core agent functionality for Agent Code."""

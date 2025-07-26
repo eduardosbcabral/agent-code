@@ -1,4 +1,4 @@
-"""Task completion tool for Chapter Agent."""
+"""Task completion tool for Agent Code."""
 
 from typing import Dict, Any
 from ui.display import display_success

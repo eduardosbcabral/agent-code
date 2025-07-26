@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Chapter Agent - A manually controlled Python AI Agent
+Agent Code - A manually controlled Python AI Agent
 
 Main entry point for the application.
 """
@@ -15,7 +15,7 @@ from rich.panel import Panel
 from rich.prompt import Prompt
 
 from config.settings import load_config, Config
-from core.agent import ChapterAgent
+from core.agent import AgentCode
 from ui.display import display_welcome, display_error
 
 
@@ -125,7 +125,7 @@ async def main():
             console.print(f"\n[green]✓[/green] Agent Initialized. Workspace set to: [bold]{working_path}[/bold]")
         
         # Initialize the agent
-        agent = ChapterAgent(config, working_path)
+        agent = AgentCode(config, working_path)
         
         # Start the main interaction loop
         await agent.run()

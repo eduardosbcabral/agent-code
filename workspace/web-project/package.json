@@ -1,7 +1,7 @@
 {
   "name": "sample-web-project",
   "version": "1.0.0",
-  "description": "A sample web project for testing Chapter Agent capabilities",
+  "description": "A sample web project for testing Agent Code capabilities",
   "main": "index.html",
   "scripts": {
     "start": "python -m http.server 8000",
@@ -17,6 +17,6 @@
     "prettier": "^2.4.0"
   },
   "keywords": ["web", "html", "css", "javascript"],
-  "author": "Chapter Agent Test",
+  "author": "Agent Code Test",
   "license": "MIT"
 }

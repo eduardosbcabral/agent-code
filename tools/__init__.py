@@ -1,4 +1,4 @@
-"""Tools and utilities for Chapter Agent."""
+"""Tools and utilities for Agent Code."""
 
 from .file_lister import FileLister
 from .file_reader import FileReader

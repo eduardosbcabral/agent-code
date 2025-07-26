@@ -1,4 +1,4 @@
-"""Configuration management for Chapter Agent."""
+"""Configuration management for Agent Code."""
 
 import os
 from dataclasses import dataclass
@@ -15,7 +15,7 @@ console = Console()
 
 @dataclass
 class Config:
-    """Configuration class for Chapter Agent."""
+    """Configuration class for Agent Code."""
     
     gemini_api_key: Optional[str] = None
     debug_raw_content: bool = False

@@ -1,4 +1,4 @@
-"""Display utilities for Chapter Agent terminal UI."""
+"""Display utilities for Agent Code terminal UI."""
 
 import os
 from rich.console import Console
@@ -15,7 +15,7 @@ def _is_raw_mode():
 def display_welcome():
     """Display the welcome message and application info."""
     if _is_raw_mode():
-        print("Chapter Agent 🤖")
+        print("Agent Code 🤖")
         print()
         print("A manually controlled Python AI Agent that operates in a sandboxed environment")
         print("with transparent command execution and structured terminal UI.")
@@ -29,7 +29,7 @@ def display_welcome():
         return
     
     welcome_text = Text()
-    welcome_text.append("Chapter Agent", style="bold cyan")
+    welcome_text.append("Agent Code", style="bold cyan")
     welcome_text.append(" 🤖\n\n", style="cyan")
     welcome_text.append("A manually controlled Python AI Agent that operates in a sandboxed environment\n")
     welcome_text.append("with transparent command execution and structured terminal UI.\n\n")

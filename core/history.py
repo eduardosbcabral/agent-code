@@ -1,4 +1,4 @@
-"""Conversation history manager for Chapter Agent."""
+"""Conversation history manager for Agent Code."""
 
 from typing import List, Dict, Any, Optional
 from datetime import datetime

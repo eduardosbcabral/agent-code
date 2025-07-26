@@ -2,7 +2,7 @@
 Python Examples Project
 ======================
 
-This folder contains various Python examples to test the Chapter Agent's capabilities:
+This folder contains various Python examples to test the Agent Code's capabilities:
 
 1. calculator.py - Simple calculator with broken code (for testing fixes)
 2. file_processor.py - File processing utilities (for testing file operations)

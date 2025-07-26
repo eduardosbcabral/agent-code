@@ -1,4 +1,4 @@
-"""Thought extraction and parsing utilities for Chapter Agent."""
+"""Thought extraction and parsing utilities for Agent Code."""
 
 import re
 from typing import List, Dict, Any, Tuple, Optional

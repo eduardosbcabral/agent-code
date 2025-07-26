@@ -1,6 +1,6 @@
-# Chapter Agent - Prompt Examples & Test Scenarios
+# Agent Code - Prompt Examples & Test Scenarios
 
-Welcome to the Chapter Agent! This file contains ready-to-use prompts and test scenarios designed to showcase the agent's capabilities across different types of projects.
+Welcome to the Agent Code! This file contains ready-to-use prompts and test scenarios designed to showcase the agent's capabilities across different types of projects.
 
 ## 🚀 Quick Start Examples
 
@@ -14,7 +14,7 @@ Read the README.md file and summarize what projects are available
 ```
 
 ```
-Create a new file called hello.py that prints "Hello, Chapter Agent!"
+Create a new file called hello.py that prints "Hello, Agent Code!"
 ```
 
 ### Simple Problem Solving
@@ -296,7 +296,7 @@ Work with the largest files in the workspace and see how the agent handles memor
 
 ## 🎪 Demo-Ready Scenarios
 
-Perfect for showcasing the Chapter Agent's capabilities:
+Perfect for showcasing the Agent Code's capabilities:
 
 ### 5-Minute Demo
 ```
@@ -322,11 +322,11 @@ Create a complete web-based data dashboard: fix all existing issues, integrate t
 
 ## 🔄 How to Use These Prompts
 
-1. **Copy and paste** any prompt directly into the Chapter Agent
+1. **Copy and paste** any prompt directly into the Agent Code
 2. **Modify the prompts** to match your specific needs
 3. **Combine multiple prompts** for complex workflows
 4. **Use as inspiration** to create your own custom scenarios
 
-Remember: The Chapter Agent works best with clear, specific instructions. Feel free to iterate and refine your prompts based on the results you get!
+Remember: The Agent Code works best with clear, specific instructions. Feel free to iterate and refine your prompts based on the results you get!
 
 Happy coding! 🚀

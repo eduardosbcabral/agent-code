@@ -1,9 +1,9 @@
 services:
-  chapter-agent:
+  agent-code:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: chapter-agent
+    container_name: agent-code
     user: "${DOCKER_UID:-1000}:${DOCKER_GID:-1000}"
     environment:
       # Load environment variables from .env file
@@ -20,11 +20,11 @@ services:
     command: python main.py
     
   # Optional: Development service with hot reload
-  chapter-agent-dev:
+  agent-code-dev:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: chapter-agent-dev
+    container_name: agent-code-dev
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - DEBUG_RAW_CONTENT=${DEBUG_RAW_CONTENT}

@@ -1,4 +1,4 @@
-"""Gemini API client wrapper for Chapter Agent."""
+"""Gemini API client wrapper for Agent Code."""
 
 import asyncio
 from typing import List, Dict, Any, Optional
@@ -50,7 +50,7 @@ class GeminiClient:
                 contents=contents,
                 config=types.GenerateContentConfig(
                     temperature=0.1,  # Lower temperature for more consistent responses
-                    max_output_tokens=4096,
+                    max_output_tokens=65535,
                     thinking_config=types.ThinkingConfig(
                         include_thoughts=True,
                         thinking_budget=-1

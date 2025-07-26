@@ -1,1 +1,1 @@
-"""Configuration package for Chapter Agent."""
+"""Configuration package for Agent Code."""

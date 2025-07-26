@@ -2,7 +2,7 @@
 Data Analysis Project
 ====================
 
-This project contains sample datasets and analysis scripts to test the Chapter Agent's
+This project contains sample datasets and analysis scripts to test the Agent Code's
 data processing and analysis capabilities.
 
 Contents:

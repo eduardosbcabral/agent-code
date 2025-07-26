@@ -1,6 +1,6 @@
 # Docker Setup Guide
 
-This document explains how to set up and run Chapter Agent using Docker.
+This document explains how to set up and run Agent Code using Docker.
 
 ## Prerequisites
 
@@ -12,29 +12,29 @@ This document explains how to set up and run Chapter Agent using Docker.
 1. **Clone and Configure**
    ```bash
    git clone <repository-url>
-   cd chapter-agent
+   cd agent-code
    cp .env.example .env
    # Edit .env with your actual API keys
    ```
 
 2. **Run the Application**
    ```bash
-   docker-compose up chapter-agent
+   docker-compose up agent-code
    ```
 
 3. **For Development (with hot reload)**
    ```bash
-   docker-compose --profile dev up chapter-agent-dev
+   docker-compose --profile dev up agent-code-dev
    ```
 
 ## Docker Services
 
-### `chapter-agent` (Production)
+### `agent-code` (Production)
 - Optimized for production use
 - Uses pre-built image with application code baked in
 - Suitable for demo and presentation purposes
 
-### `chapter-agent-dev` (Development)
+### `agent-code-dev` (Development)
 - Development profile with volume mounting
 - Code changes reflected immediately without rebuild
 - Useful for active development
@@ -99,18 +99,18 @@ This is useful for:
 **Example usage:**
 ```bash
 # Run with raw output
-DEBUG_RAW_CONTENT=true docker-compose up chapter-agent
+DEBUG_RAW_CONTENT=true docker-compose up agent-code
 
 # Or set in .env file
 echo "DEBUG_RAW_CONTENT=true" >> .env
-docker-compose up chapter-agent
+docker-compose up agent-code
 ```
 
 ## Docker Commands
 
 ### Build Image Manually
 ```bash
-docker build -t chapter-agent .
+docker build -t agent-code .
 ```
 
 ### Run Container Manually
@@ -118,12 +118,12 @@ docker build -t chapter-agent .
 docker run -it --rm \
   --env-file .env \
   -v $(pwd)/workspace:/app/workspace \
-  chapter-agent
+  agent-code
 ```
 
 ### View Logs
 ```bash
-docker-compose logs chapter-agent
+docker-compose logs agent-code
 ```
 
 ### Stop Services
@@ -137,7 +137,7 @@ docker-compose down
 docker-compose down
 
 # Remove images
-docker rmi chapter-agent
+docker rmi agent-code
 
 # Remove volumes (careful - this deletes workspace data)
 docker-compose down -v
@@ -152,7 +152,7 @@ If you encounter permission issues with files in the workspace:
 sudo chown -R $USER:$USER workspace/
 
 # Or run with proper user mapping
-docker-compose run --user $(id -u):$(id -g) chapter-agent
+docker-compose run --user $(id -u):$(id -g) agent-code
 ```
 
 ### API Key Issues
@@ -161,7 +161,7 @@ docker-compose run --user $(id -u):$(id -g) chapter-agent
 - Verify API keys are not quoted in the `.env` file
 
 ### Container Won't Start
-- Check Docker logs: `docker-compose logs chapter-agent`
+- Check Docker logs: `docker-compose logs agent-code`
 - Ensure all required dependencies are in `requirements.txt`
 - Verify the Dockerfile builds successfully
 

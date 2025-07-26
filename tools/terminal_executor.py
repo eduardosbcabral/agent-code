@@ -1,4 +1,4 @@
-"""Terminal command execution tool for Chapter Agent."""
+"""Terminal command execution tool for Agent Code."""
 
 import asyncio
 import subprocess

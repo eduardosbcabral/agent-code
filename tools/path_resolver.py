@@ -1,4 +1,4 @@
-"""Path utilities for Chapter Agent tools."""
+"""Path utilities for Agent Code tools."""
 
 from pathlib import Path
 

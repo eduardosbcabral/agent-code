@@ -1,4 +1,4 @@
-"""Project context builder for Chapter Agent."""
+"""Project context builder for Agent Code."""
 
 import os
 import asyncio

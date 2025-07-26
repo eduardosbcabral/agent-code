@@ -1,1 +1,1 @@
-"""User interface components for Chapter Agent."""
+"""User interface components for Agent Code."""

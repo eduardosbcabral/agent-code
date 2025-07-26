@@ -1,6 +1,6 @@
-# Chapter Agent Test Workspace
+# Agent Code Test Workspace
 
-Welcome to the Chapter Agent test workspace! This directory contains various projects and files designed to test and demonstrate the Chapter Agent's capabilities.
+Welcome to the Agent Code test workspace! This directory contains various projects and files designed to test and demonstrate the Agent Code's capabilities.
 
 ## Directory Structure
 
@@ -55,7 +55,7 @@ Utility scripts for common tasks:
 
 ## How to Use This Workspace
 
-1. **Start the Chapter Agent** and point it to this workspace directory
+1. **Start the Agent Code** and point it to this workspace directory
 2. **Choose a test scenario** from any of the projects above
 3. **Give the agent a task** like:
    - "Fix all the syntax errors in the Python calculator"
@@ -76,7 +76,7 @@ Utility scripts for common tasks:
 
 ## Expected Agent Capabilities
 
-The Chapter Agent should be able to:
+The Agent Code should be able to:
 - ✅ **Read and analyze** code files to identify issues
 - ✅ **Fix syntax errors** and bugs in the code
 - ✅ **Write new files** and complete missing functionality

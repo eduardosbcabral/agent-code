@@ -1,4 +1,4 @@
-"""Main Chapter Agent class."""
+"""Main Agent Code class."""
 
 import asyncio
 from pathlib import Path
@@ -31,8 +31,8 @@ def _print_formatted(text: str, config: Config = None):
         console.print(text)
 
 
-class ChapterAgent:
-    """The main Chapter Agent class that handles AI interactions and command execution."""
+class AgentCode:
+    """The main Agent Code class that handles AI interactions and command execution."""
     
     def __init__(self, config: Config, working_directory: Path):
         """Initialize the agent with configuration and working directory."""

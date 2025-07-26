@@ -1,4 +1,4 @@
-"""Command execution system for Chapter Agent."""
+"""Command execution system for Agent Code."""
 
 from pathlib import Path
 from typing import Dict, Any, List
