@@ -2,6 +2,8 @@
 
 Welcome to the Agent Code test workspace! This directory contains various projects and files designed to test and demonstrate the Agent Code's capabilities.
 
+<img width="1203" height="800" alt="image" src="https://github.com/user-attachments/assets/6620d219-be2b-4552-95c4-0bfe4f042866" />
+
 ## Directory Structure
 
 ### 📁 `python-examples/`
