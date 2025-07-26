@@ -45,6 +45,11 @@ def display_info(message: str):
     console.print(f"\n[blue]ℹ[/blue] {message}")
 
 
+def display_warning(message: str):
+    """Display a warning message in a formatted style."""
+    console.print(f"\n[yellow]⚠[/yellow] {message}")
+
+
 def display_thoughts(thoughts: str):
     """Display the agent's thoughts in a formatted panel."""
     panel = Panel(

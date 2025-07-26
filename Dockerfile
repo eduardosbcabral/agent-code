@@ -28,7 +28,7 @@ COPY . .
 # Create a non-root user for security
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 RUN chown -R appuser:appuser /app
-USER appuser
+# USER appuser  # Commented out - docker-compose will set proper user
 
 # Expose port (if needed for future web interface)
 EXPOSE 8000

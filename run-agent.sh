@@ -46,5 +46,10 @@ echo "Press Ctrl+C to stop the agent"
 echo "================================="
 echo ""
 
+# Export user ID and group ID for proper permissions
+# UID is readonly in bash, so we'll use different variable names
+export DOCKER_UID=$(id -u)
+export DOCKER_GID=$(id -g)
+
 # Run the agent
 docker-compose run --rm chapter-agent

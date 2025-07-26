@@ -1,11 +1,10 @@
-version: '3.8'
-
 services:
   chapter-agent:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: chapter-agent
+    user: "${DOCKER_UID:-1000}:${DOCKER_GID:-1000}"
     environment:
       # Load environment variables from .env file
       - GEMINI_API_KEY=${GEMINI_API_KEY}

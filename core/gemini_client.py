@@ -19,7 +19,7 @@ class GeminiClient:
         """Initialize the Gemini client."""
         self.config = config
         self.client = None
-        self.model_name = "gemini-1.5-flash"
+        self.model_name = "gemini-2.5-flash"
         
     async def initialize(self):
         """Initialize the async Gemini client."""
@@ -44,17 +44,11 @@ class GeminiClient:
             # Prepare the conversation for Gemini
             contents = self._prepare_contents(conversation_history)
             
-            # Configure thinking if enabled
-            thinking_config = None
-            if enable_thinking:
-                thinking_config = types.ThinkingConfig(include_thinking=True)
-            
-            # Generate response
+            # Generate response with thinking enabled
             response = await self.client.aio.models.generate_content(
                 model=self.model_name,
                 contents=contents,
                 config=types.GenerateContentConfig(
-                    thinking_config=thinking_config,
                     temperature=0.1,  # Lower temperature for more consistent responses
                     max_output_tokens=4096
                 )

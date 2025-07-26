@@ -13,6 +13,8 @@ from core.context import ProjectContextBuilder
 from core.gemini_client import GeminiClient
 from core.history import ConversationHistory
 from core.parser import ThoughtExtractor
+from core.command_executor import CommandExecutor
+from core.command_parser import CommandParser
 from ui.display import display_info, display_error, display_thoughts, display_action, display_observation
 
 console = Console()
@@ -29,6 +31,8 @@ class ChapterAgent:
         self.gemini_client = GeminiClient(config)
         self.conversation_history = ConversationHistory()
         self.thought_extractor = ThoughtExtractor()
+        self.command_executor = CommandExecutor(str(working_directory))
+        self.command_parser = CommandParser()
         self.project_context = ""
         
         display_info(f"Agent initialized with workspace: {working_directory}")
@@ -106,26 +110,46 @@ class ChapterAgent:
             if response_data['thoughts']:
                 display_thoughts(response_data['thoughts'])
             
-            # Extract and parse actions
-            parsed_data = self.thought_extractor.extract_thoughts_and_actions(
-                response_data['final_text']
-            )
+            # Parse the response for commands
+            parsed_response = self.command_parser.parse_response(response_data['final_text'])
             
-            # Display and execute actions
-            if parsed_data['actions']:
-                console.print(f"\n[blue]> Agent is performing {len(parsed_data['actions'])} actions...[/blue]")
+            # Validate commands
+            validation = self.command_parser.validate_commands(parsed_response['commands'])
+            if not validation['valid']:
+                display_error("Invalid commands detected in AI response")
+                for error in validation['errors']:
+                    display_error(f"  - {error}")
+                return
+            
+            # Display command summary
+            if parsed_response['commands']:
+                console.print(f"\n[blue]{self.command_parser.format_command_summary(parsed_response['commands'])}[/blue]")
                 
+                # Display narrations if present
+                for i, narration in enumerate(parsed_response['narrations']):
+                    console.print(f"\n[dim]Agent: {narration}[/dim]")
+                
+                # Execute commands
                 observations = []
-                for i, action in enumerate(parsed_data['actions'], 1):
-                    # Display the action
-                    display_action(i, action.get('narration', ''), action['command'])
+                for i, command in enumerate(parsed_response['commands']):
+                    display_action(i + 1, "", f"[CMD:{command['type']}]")
                     
-                    # Execute the action (placeholder for now)
-                    observation = await self._execute_action(action)
-                    observations.append(f"[Observation for Action {i}]:\n{observation}")
+                    # Execute the command
+                    result = await self.command_executor.execute_command(
+                        command['type'], 
+                        command['args']
+                    )
                     
-                    # If this is a FINISH action, break
-                    if action['type'] == 'FINISH':
+                    if result['success']:
+                        observation = f"[Command {i+1} - {command['type']}]: {result['output']}"
+                    else:
+                        observation = f"[Command {i+1} - {command['type']} ERROR]: {result.get('error', 'Unknown error')}"
+                        display_error(f"Command failed: {result.get('error', 'Unknown error')}")
+                    
+                    observations.append(observation)
+                    
+                    # If this is a FINISH command, break
+                    if command['type'] == 'FINISH':
                         break
                 
                 # Display observations
@@ -139,40 +163,13 @@ class ChapterAgent:
             self.conversation_history.add_assistant_response(
                 thoughts=response_data['thoughts'],
                 final_text=response_data['final_text'],
-                actions=parsed_data['actions']
+                actions=[]  # We'll update this to use the new command format later
             )
             
             # Handle final output if FINISH was called
-            if parsed_data['has_finish'] and parsed_data['final_output']:
+            if parsed_response['has_finish'] and parsed_response['final_output']:
                 console.print(f"\n[green]✅ Task Complete![/green]")
-                console.print(f"\n[bold]Final Answer:[/bold]\n{parsed_data['final_output']}")
+                console.print(f"\n[bold]Final Answer:[/bold]\n{parsed_response['final_output']}")
                 
         except Exception as e:
             display_error(f"Error processing user input: {e}")
-    
-    async def _execute_action(self, action: Dict[str, Any]) -> str:
-        """Execute a single action and return the observation."""
-        try:
-            action_type = action['type']
-            params = action.get('params', {})
-            
-            if action_type == 'READ_FILE':
-                return f"File reading not implemented yet. Would read: {params.get('file_path')}"
-            
-            elif action_type == 'WRITE_FILE':
-                return f"File writing not implemented yet. Would write to: {params.get('file_path')}"
-            
-            elif action_type == 'LIST_FILES':
-                return "File listing not implemented yet. Would show directory structure."
-            
-            elif action_type == 'TERMINAL_COMMAND':
-                return f"Terminal command not implemented yet. Would execute: {params.get('terminal_command')}"
-            
-            elif action_type == 'FINISH':
-                return "Task marked as complete."
-            
-            else:
-                return f"Unknown action type: {action_type}"
-                
-        except Exception as e:
-            return f"Error executing action: {e}"
