@@ -125,12 +125,23 @@ class ChapterAgent:
             if parsed_response['commands']:
                 console.print(f"\n[blue]{self.command_parser.format_command_summary(parsed_response['commands'])}[/blue]")
                 
+                # Check command limit (max 20 commands per operation)
+                max_commands = 20
+                command_count = len(parsed_response['commands'])
+                
+                if command_count > max_commands:
+                    display_error(f"Too many commands in response: {command_count} (limit: {max_commands})")
+                    display_error("Request the AI to break the task into smaller operations")
+                    return
+                
                 # Display narrations if present
                 for i, narration in enumerate(parsed_response['narrations']):
                     console.print(f"\n[dim]Agent: {narration}[/dim]")
                 
-                # Execute commands
+                # Execute commands with termination control
                 observations = []
+                task_completed = False
+                
                 for i, command in enumerate(parsed_response['commands']):
                     display_action(i + 1, "", f"[CMD:{command['type']}]")
                     
@@ -148,8 +159,10 @@ class ChapterAgent:
                     
                     observations.append(observation)
                     
-                    # If this is a FINISH command, break
+                    # Check for FINISH command - this terminates the operation
                     if command['type'] == 'FINISH':
+                        task_completed = True
+                        console.print(f"\n[green]🏁 FINISH command received - Task completion signaled[/green]")
                         break
                 
                 # Display observations
@@ -158,6 +171,17 @@ class ChapterAgent:
                     
                     # Add observations to conversation history
                     self.conversation_history.add_observation('\n\n'.join(observations))
+                
+                # Handle final output and task completion
+                if task_completed and parsed_response['final_output']:
+                    console.print(f"\n[green]✅ Task Complete![/green]")
+                    console.print(f"\n[bold]Final Answer:[/bold]\n{parsed_response['final_output']}")
+                elif task_completed:
+                    console.print(f"\n[green]✅ Task Complete![/green]")
+                    console.print(f"\n[bold]Final Answer:[/bold] Operation completed successfully.")
+                elif not task_completed and command_count > 0:
+                    console.print(f"\n[yellow]⚠ Warning:[/yellow] {command_count} commands executed without FINISH command")
+                    console.print(f"[yellow]The AI should end operations with a FINISH command.[/yellow]")
             
             # Add assistant response to history
             self.conversation_history.add_assistant_response(
@@ -165,11 +189,6 @@ class ChapterAgent:
                 final_text=response_data['final_text'],
                 actions=[]  # We'll update this to use the new command format later
             )
-            
-            # Handle final output if FINISH was called
-            if parsed_response['has_finish'] and parsed_response['final_output']:
-                console.print(f"\n[green]✅ Task Complete![/green]")
-                console.print(f"\n[bold]Final Answer:[/bold]\n{parsed_response['final_output']}")
                 
         except Exception as e:
             display_error(f"Error processing user input: {e}")
