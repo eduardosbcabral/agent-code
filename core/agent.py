@@ -155,6 +155,13 @@ class ChapterAgent:
                     for error in validation['errors']:
                         display_error(f"  - {error}")
                     break
+
+                # Display narrations if present
+                for i, narration in enumerate(parsed_response['narrations']):
+                    if self.config.debug_raw_content:
+                        print(f"\nAgent: {narration}")
+                    else:
+                        console.print(f"\n[dim]Agent: {narration}[/dim]")
                 
                 # Check if AI response has commands
                 if not parsed_response['commands']:
@@ -190,14 +197,7 @@ class ChapterAgent:
                     display_error(f"Command limit exceeded: {total_commands} (limit: {max_commands})")
                     display_error("Task execution stopped to prevent runaway operations")
                     break
-                
-                # Display narrations if present
-                for i, narration in enumerate(parsed_response['narrations']):
-                    if self.config.debug_raw_content:
-                        print(f"\nAgent: {narration}")
-                    else:
-                        console.print(f"\n[dim]Agent: {narration}[/dim]")
-                
+
                 # Execute commands
                 observations = []
                 
