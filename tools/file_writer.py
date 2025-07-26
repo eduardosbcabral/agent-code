@@ -28,8 +28,8 @@ class FileWriter:
             # Resolve path relative to workspace
             full_path = self.path_resolver.resolve_path(file_path)
             
-            # Process content to handle escaped newlines and other escape sequences
-            processed_content = content.replace('\\n', '\n').replace('\\t', '\t').replace('\\r', '\r')
+            # Process content to handle escaped sequences
+            processed_content = content.replace('\\n', '\n').replace('\\t', '\t').replace('\\r', '\r').replace('\\"', '"').replace("\\'", "'")
             
             # Create parent directories if they don't exist
             full_path.parent.mkdir(parents=True, exist_ok=True)

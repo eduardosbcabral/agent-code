@@ -113,8 +113,16 @@ class ChapterAgent:
                 )
                 
                 if not response_data:
-                    display_error("Failed to get response from AI")
-                    break
+                    display_error("Failed to get response from AI. Trying simplified approach...")
+                    # Try with a simpler prompt to recover
+                    simple_prompt = f"Continue working on: {user_input}. What should be the next step?"
+                    self.conversation_history.add_user_message(simple_prompt)
+                    response_data = await self.gemini_client.generate_response(
+                        self.conversation_history.get_conversation_for_api(),
+                    )
+                    if not response_data:
+                        display_error("Unable to get AI response after retry. Ending task.")
+                        break
                 
                 # Display thoughts
                 if response_data['thoughts']:

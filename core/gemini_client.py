@@ -76,7 +76,40 @@ class GeminiClient:
                 return None
                 
         except Exception as e:
-            display_error(f"Error generating response: {e}")
+            error_str = str(e)
+            display_error(f"Error generating response: {error_str}")
+            
+            # Check for specific error types
+            if "500" in error_str and "INTERNAL" in error_str:
+                display_error("Gemini API is experiencing internal issues. Retrying in 5 seconds...")
+                await asyncio.sleep(5)
+                # Attempt one retry for 500 errors
+                try:
+                    response = await self.client.aio.models.generate_content(
+                        model=self.model_name,
+                        contents=contents,
+                        config=types.GenerateContentConfig(
+                            temperature=0.1,
+                            max_output_tokens=4096,
+                            thinking_config=types.ThinkingConfig(
+                                include_thoughts=True,
+                                thinking_budget=-1
+                            )
+                        )
+                    )
+                    
+                    if response.candidates and len(response.candidates) > 0:
+                        candidate = response.candidates[0]
+                        thoughts, final_text = self._extract_thoughts_and_text(candidate.content)
+                        return {
+                            'thoughts': thoughts,
+                            'final_text': final_text,
+                            'finish_reason': candidate.finish_reason,
+                            'safety_ratings': candidate.safety_ratings
+                        }
+                except Exception as retry_error:
+                    display_error(f"Retry also failed: {retry_error}")
+            
             return None
     
     def _prepare_contents(self, conversation_history: List[Dict[str, Any]]) -> List[types.Content]:

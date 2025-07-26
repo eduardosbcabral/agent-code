@@ -52,11 +52,15 @@ class TerminalExecutor:
                     display_success(f"Command completed with exit code {process.returncode}")
                 else:
                     display_warning(f"Command completed with exit code {process.returncode}")
+                    if stderr_text:
+                        display_error(f"Command error output: {stderr_text.strip()}")
                 
                 return {
                     "success": success,
                     "output": output.strip() if output else f"Command completed with exit code {process.returncode}",
-                    "exit_code": process.returncode
+                    "exit_code": process.returncode,
+                    "stdout": stdout_text,
+                    "stderr": stderr_text
                 }
                 
             except asyncio.TimeoutError:
