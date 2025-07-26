@@ -20,6 +20,17 @@ from ui.display import display_info, display_error, display_thoughts, display_ac
 console = Console()
 
 
+def _print_formatted(text: str, config: Config = None):
+    """Print text with or without formatting based on config."""
+    if config and config.debug_raw_content:
+        # Strip Rich markup and print plain text
+        import re
+        plain_text = re.sub(r'\[/?[^\]]*\]', '', text)
+        print(plain_text)
+    else:
+        console.print(text)
+
+
 class ChapterAgent:
     """The main Chapter Agent class that handles AI interactions and command execution."""
     
@@ -75,7 +86,10 @@ class ChapterAgent:
                 user_input = Prompt.ask("\n[bold cyan]USER >[/bold cyan]")
                 
                 if user_input.lower() in ['quit', 'exit', 'q']:
-                    console.print("\n[yellow]👋 Goodbye![/yellow]")
+                    if self.config.debug_raw_content:
+                        print("👋 Goodbye!")
+                    else:
+                        console.print("\n[yellow]👋 Goodbye![/yellow]")
                     break
                 
                 if not user_input.strip():
@@ -85,7 +99,10 @@ class ChapterAgent:
                 await self._process_user_input(user_input)
                 
             except KeyboardInterrupt:
-                console.print("\n\n[yellow]👋 Goodbye![/yellow]")
+                if self.config.debug_raw_content:
+                    print("\n👋 Goodbye!")
+                else:
+                    console.print("\n\n[yellow]👋 Goodbye![/yellow]")
                 break
             except Exception as e:
                 display_error(f"Error during interaction: {e}")
@@ -143,8 +160,12 @@ class ChapterAgent:
                 if not parsed_response['commands']:
                     # No commands - AI might be providing final answer
                     if parsed_response['final_output']:
-                        console.print(f"\n[green]✅ Task Complete![/green]")
-                        console.print(f"\n[bold]Final Answer:[/bold]\n{parsed_response['final_output']}")
+                        if self.config.debug_raw_content:
+                            print("\n✅ Task Complete!")
+                            print(f"\nFinal Answer:\n{parsed_response['final_output']}")
+                        else:
+                            console.print(f"\n[green]✅ Task Complete![/green]")
+                            console.print(f"\n[bold]Final Answer:[/bold]\n{parsed_response['final_output']}")
                         task_completed = True
                     else:
                         # No commands and no final output - add response and continue
@@ -156,7 +177,10 @@ class ChapterAgent:
                     break
                 
                 # Display command summary
-                console.print(f"\n[blue]{self.command_parser.format_command_summary(parsed_response['commands'])}[/blue]")
+                if self.config.debug_raw_content:
+                    print(f"\n{self.command_parser.format_command_summary(parsed_response['commands'])}")
+                else:
+                    console.print(f"\n[blue]{self.command_parser.format_command_summary(parsed_response['commands'])}[/blue]")
                 
                 # Check command limit
                 command_count = len(parsed_response['commands'])
@@ -169,7 +193,10 @@ class ChapterAgent:
                 
                 # Display narrations if present
                 for i, narration in enumerate(parsed_response['narrations']):
-                    console.print(f"\n[dim]Agent: {narration}[/dim]")
+                    if self.config.debug_raw_content:
+                        print(f"\nAgent: {narration}")
+                    else:
+                        console.print(f"\n[dim]Agent: {narration}[/dim]")
                 
                 # Execute commands
                 observations = []
@@ -206,7 +233,10 @@ class ChapterAgent:
                     # Check for FINISH command - this terminates the operation
                     if command['type'] == 'FINISH':
                         task_completed = True
-                        console.print(f"\n[green]🏁 FINISH command received - Task completion signaled[/green]")
+                        if self.config.debug_raw_content:
+                            print("\n🏁 FINISH command received - Task completion signaled")
+                        else:
+                            console.print(f"\n[green]🏁 FINISH command received - Task completion signaled[/green]")
                         break
                 
                 # Display observations
@@ -226,11 +256,19 @@ class ChapterAgent:
                 # Handle final output when task is completed
                 if task_completed:
                     if parsed_response['final_output']:
-                        console.print(f"\n[green]✅ Task Complete![/green]")
-                        console.print(f"\n[bold]Final Answer:[/bold]\n{parsed_response['final_output']}")
+                        if self.config.debug_raw_content:
+                            print("\n✅ Task Complete!")
+                            print(f"\nFinal Answer:\n{parsed_response['final_output']}")
+                        else:
+                            console.print(f"\n[green]✅ Task Complete![/green]")
+                            console.print(f"\n[bold]Final Answer:[/bold]\n{parsed_response['final_output']}")
                     else:
-                        console.print(f"\n[green]✅ Task Complete![/green]")
-                        console.print(f"\n[bold]Final Answer:[/bold] Operation completed successfully.")
+                        if self.config.debug_raw_content:
+                            print("\n✅ Task Complete!")
+                            print("\nFinal Answer: Operation completed successfully.")
+                        else:
+                            console.print(f"\n[green]✅ Task Complete![/green]")
+                            console.print(f"\n[bold]Final Answer:[/bold] Operation completed successfully.")
                     break
                 
                 # Continue loop for next AI iteration (unless FINISH was called)

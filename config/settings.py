@@ -18,10 +18,12 @@ class Config:
     """Configuration class for Chapter Agent."""
     
     gemini_api_key: Optional[str] = None
+    debug_raw_content: bool = False
     
     def __post_init__(self):
         """Load configuration from environment variables."""
         self.gemini_api_key = os.getenv("GEMINI_API_KEY")
+        self.debug_raw_content = os.getenv("DEBUG_RAW_CONTENT", "false").lower() in ("true", "1", "yes", "on")
     
     def validate(self) -> bool:
         """Validate that all required configuration is present."""

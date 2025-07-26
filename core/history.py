@@ -45,7 +45,7 @@ class ConversationHistory:
         })
         
         self._prune_if_needed()
-        display_info(f"User message added (total messages: {len(self.messages)})")
+        # display_info(f"User message added (total messages: {len(self.messages)})")
     
     def add_assistant_response(self, thoughts: str, final_text: str, actions: List[Dict] = None):
         """Add an assistant response with thoughts and actions."""
@@ -59,7 +59,7 @@ class ConversationHistory:
         })
         
         self._prune_if_needed()
-        display_info(f"Assistant response added (total messages: {len(self.messages)})")
+        # display_info(f"Assistant response added (total messages: {len(self.messages)})")
     
     def add_observation(self, observations: str):
         """Add system observations from tool execution."""
@@ -71,7 +71,7 @@ class ConversationHistory:
         })
         
         self._prune_if_needed()
-        display_info("System observations added to conversation")
+        #display_info("System observations added to conversation")
     
     def get_conversation_for_api(self) -> List[Dict[str, Any]]:
         """Get conversation formatted for API calls."""
@@ -119,7 +119,7 @@ class ConversationHistory:
             other_messages = []
         
         self.messages = system_messages + other_messages
-        display_info(f"Pruned conversation by message count to {len(self.messages)} messages")
+        # display_info(f"Pruned conversation by message count to {len(self.messages)} messages")
     
     def _prune_by_char_count(self):
         """Prune by removing messages until under character limit."""
@@ -132,7 +132,7 @@ class ConversationHistory:
             other_messages.pop(0)
         
         self.messages = system_messages + other_messages
-        display_info(f"Pruned conversation by character count to {self.get_total_char_count()} chars")
+        # display_info(f"Pruned conversation by character count to {self.get_total_char_count()} chars")
     
     def get_summary(self) -> Dict[str, Any]:
         """Get a summary of the conversation history."""

@@ -80,6 +80,31 @@ The container has read/write access to your entire host filesystem through the `
 
 The Docker setup uses these environment variables from your `.env` file:
 - `GEMINI_API_KEY` - Your Google Gemini AI API key
+- `DEBUG_RAW_CONTENT` - Set to `true` to disable UI formatting and output plain text only
+
+### Debug Raw Content Mode
+
+When `DEBUG_RAW_CONTENT=true` is set, the agent will:
+- Output all messages as plain text without Rich formatting
+- Display agent thoughts without panels or colors
+- Show command actions and observations in simple text format
+- Remove all visual styling and borders
+
+This is useful for:
+- Piping output to files or other tools
+- Integration with other systems that don't support Rich formatting
+- Debugging and log analysis
+- Environments where terminal formatting causes issues
+
+**Example usage:**
+```bash
+# Run with raw output
+DEBUG_RAW_CONTENT=true docker-compose up chapter-agent
+
+# Or set in .env file
+echo "DEBUG_RAW_CONTENT=true" >> .env
+docker-compose up chapter-agent
+```
 
 ## Docker Commands
 
